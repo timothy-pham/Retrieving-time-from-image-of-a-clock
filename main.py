@@ -207,13 +207,14 @@ def run(img_path):
                     break
             if not found:
                 groups_temp.append([angles[i], group[1:][i]])
-        # Sắp xếp các nhóm theo độ dài trung bình của các đường thẳng trong nhóm
+        # Sắp xếp các nhóm theo tổng độ dài giảm dần
         # print(f"groups_temp: {groups_temp}")
         for i in range(len(groups_temp)):
-            group_temp = groups_temp[i]
-            distances_temp = [np.linalg.norm(np.array(line[0][:2]) - np.array(line[0][2:])) for line in group_temp[1:]]
-            # Thêm vào đầu mảng
-            groups_temp[i].insert(0, np.mean(distances_temp))
+            total_distance = 0
+            for line in groups_temp[i][1:]:
+                x1, y1, x2, y2 = line[0]
+                total_distance += np.linalg.norm(np.array([x1, y1]) - np.array([x2, y2]))
+            groups_temp[i] = [total_distance] + groups_temp[i]
         groups_temp = sorted(groups_temp, key=lambda x: x[0], reverse=True)
 
         # Bỏ dinstance temp
@@ -422,6 +423,14 @@ def run(img_path):
     if frac_minute < 0.2 and rounded_second >= 40:
         rounded_minute -= 1
 
+    if frac_hour >= -0.2 and rounded_minute >= 55:
+        rounded_hour += 1
+        rounded_minute = 0
+
+    if frac_minute >= -0.2 and rounded_second >= 55:
+        rounded_minute += 1
+        rounded_second = 0
+        
     # nếu phút hoặc giây bằng 60 thì làm tròn thành 0
     if rounded_minute == 60:
         rounded_minute = 0

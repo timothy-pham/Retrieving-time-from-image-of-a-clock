@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 # Đọc ảnh đồng hồ
-image_path = 'input/clock6.jpg'
+image_path = 'input/clock9.jpg'
 raw_image = cv2.imread(image_path)
 clock_image = cv2.imread(image_path)
 
@@ -410,6 +410,7 @@ hour_time = hour_angle / 30
 minute_time = minute_angle / 6
 second_time = second_angle / 6
 
+print(f"Thời gian trước làm tròn: {hour_time} : {minute_time} : {second_time}")
 rounded_hour = round(hour_time)
 rounded_minute = round(minute_time)
 rounded_second = round(second_time)
@@ -419,11 +420,23 @@ frac_hour = rounded_hour - hour_time
 frac_minute = rounded_minute - minute_time
 frac_second = rounded_second - second_time
 
+print(f"frac_hour: {frac_hour}")
+print(f"frac_minute: {frac_minute}")
+print(f"frac_second: {frac_second}")
+
 if frac_hour < 0.2 and rounded_minute >= 40:
     rounded_hour -= 1
 
 if frac_minute < 0.2 and rounded_second >= 40:
     rounded_minute -= 1
+
+if frac_hour >= -0.2 and rounded_minute >= 55:
+    rounded_hour += 1
+    rounded_minute = 0
+
+if frac_minute >= -0.2 and rounded_second >= 55:
+    rounded_minute += 1
+    rounded_second = 0
 
 print(f"Thời gian: {rounded_hour}:{rounded_minute}:{rounded_second}")
 
