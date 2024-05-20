@@ -411,6 +411,17 @@ def run(img_path):
     rounded_minute = round(minute_time)
     rounded_second = round(second_time)
 
+    # Xử lý trường hợp đặc biệt sai số 
+    frac_hour = rounded_hour - hour_time
+    frac_minute = rounded_minute - minute_time
+    frac_second = rounded_second - second_time
+
+    if frac_hour < 0.2 and rounded_minute >= 40:
+        rounded_hour -= 1
+
+    if frac_minute < 0.2 and rounded_second >= 40:
+        rounded_minute -= 1
+
     # nếu phút hoặc giây bằng 60 thì làm tròn thành 0
     if rounded_minute == 60:
         rounded_minute = 0

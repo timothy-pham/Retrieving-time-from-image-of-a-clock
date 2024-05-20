@@ -77,7 +77,7 @@ if clock_circle is not None:
 
     # Sử dụng Hough Line Transform để tìm đường thẳng
     # Tạo maxLineGap từ bán kính của ảnh
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=70, minLineLength=10, maxLineGap=1)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=80, minLineLength=10, maxLineGap=1)
     image_show = cut_image.copy()
 else:
     print("Không tìm thấy hình tròn trong ảnh.")
@@ -140,7 +140,7 @@ for line in focus_center_lines:
     angle = np.degrees(angle)
     found = False
     for group in groups:
-        if abs(angle - group[0]) < 10 or abs(angle - group[0] - 180) < 10 or abs(angle - group[0] + 180) < 10:
+        if abs(angle - group[0]) < 12 or abs(angle - group[0] - 180) < 12 or abs(angle - group[0] + 180) < 12:
             group.append(line)
             found = True
             break
@@ -410,17 +410,20 @@ hour_time = hour_angle / 30
 minute_time = minute_angle / 6
 second_time = second_angle / 6
 
-print(f"Thời gian: {hour_time}:{minute_time}:{second_time}")
-
 rounded_hour = round(hour_time)
 rounded_minute = round(minute_time)
 rounded_second = round(second_time)
 
-# nếu phút hoặc giây bằng 60 thì làm tròn thành 0
-if rounded_minute == 60:
-    rounded_minute = 0
-if rounded_second == 60:
-    rounded_second = 0 
+# Xử lý trường hợp đặc biệt sai số 
+frac_hour = rounded_hour - hour_time
+frac_minute = rounded_minute - minute_time
+frac_second = rounded_second - second_time
+
+if frac_hour < 0.2 and rounded_minute >= 40:
+    rounded_hour -= 1
+
+if frac_minute < 0.2 and rounded_second >= 40:
+    rounded_minute -= 1
 
 print(f"Thời gian: {rounded_hour}:{rounded_minute}:{rounded_second}")
 
